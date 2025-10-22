@@ -76,39 +76,6 @@
         transform: rotate(360deg);
       }
     }
-    
-    /* Styles for rendered H1, H2, etc. inside the chat bubble */
-    .prose {
-        color: inherit; /* Inherit text color from parent bubble */
-    }
-    .prose h1, .prose h2, .prose h3, .prose p {
-        margin-top: 0.75em;
-        margin-bottom: 0.75em;
-    }
-    .prose h1 {
-        font-size: 1.25rem; /* 20px */
-        font-weight: 600;
-    }
-    .prose h2 {
-        font-size: 1.125rem; /* 18px */
-        font-weight: 600;
-    }
-    .prose h3 {
-        font-size: 1rem; /* 16px */
-        font-weight: 600;
-    }
-    .prose p {
-        font-size: 0.875rem; /* 14px */
-    }
-    /* Remove top margin for the first element in the prose */
-    .prose > :first-child {
-        margin-top: 0;
-    }
-    /* Remove bottom margin for the last element in the prose */
-    .prose > :last-child {
-        margin-bottom: 0;
-    }
-    
   </style>
 </head>
 <body class="bg-slate-100">
@@ -143,7 +110,7 @@
       
       <!-- Chat Header -->
       <header class="flex items-center justify-between p-4 border-b border-slate-200">
-        <!-- === CHANGED TEXT HERE === -->
+        <!-- === EDITED LINE === -->
         <h1 class="text-lg font-semibold text-slate-800">OS Chat Bot</h1>
         <!-- Mobile Nav Toggle (for future use) -->
         <div class="flex items-center gap-2">
@@ -173,6 +140,7 @@
     </div>
 
     <!-- Right History Panel -->
+    <!-- === EDITED LINE (FIXED TYPO) === -->
     <aside id="historyPanel" class="hidden lg:flex flex-col w-full max-w-sm p-4 bg-white rounded-xl shadow-sm border border-slate-200">
       <div class="flex items-center justify-between pb-3 border-b border-slate-200">
         <h2 class="font-semibold text-slate-800">History Chat</h2>
@@ -199,9 +167,8 @@
 
   <script>
     // ✅ Updated Webhook URL (new ngrok endpoint)
-    // const WEBHOOK_URL = 'https://delilah-unclever-malcolm.ngrok-free.dev/webhook-test/rag/os';
-    // Using a placeholder for demonstration
-    const WEBHOOK_URL = 'https://delilah-unclever-malcolm.ngrok-free.dev/webhook/rag/os'; // Placeholder API for testing
+    // === EDITED LINE ===
+    const WEBHOOK_URL = 'https://delilah-unclever-malcolm.ngrok-free.dev/webhook/mscsbot';
 
     const STORAGE_KEY = 'chat_conversations_v2'; // Updated key
     const SESSION_KEY = 'chat_session_id_v2'; // Updated key
@@ -322,8 +289,7 @@
 
       // Message Content
       const textDiv = document.createElement('div');
-      // Added 'prose' class to style H1, P, etc.
-      textDiv.className = 'text-sm prose prose-sm max-w-none'; 
+      textDiv.className = 'text-sm prose prose-sm max-w-none';
       textDiv.innerHTML = escapeAndFormat(m.text); // Use formatting
       
       // Meta (Timestamp or Loading)
@@ -355,29 +321,18 @@
       return msgWrapper;
     }
 
-    // === FUNCTION CHANGED ===
     function escapeAndFormat(str) {
-      // --- USER REQUESTED CHANGE ---
-      // This function NO LONGER escapes HTML tags, to allow <h1>, <h2>, etc.
-      // WARNING: This is a potential security risk if you do not TRUST
-      // your chatbot's output. A malicious response could run scripts.
-      // Only use this if you control the bot's output completely.
-      
-      // 1. Escape HTML (REMOVED)
-      /*
+      // 1. Escape HTML
       let escaped = String(str)
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;')
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#039;');
-      */
       
       // 2. Format newlines to <br>
-      // We still format newlines, but on the raw string
-      let formatted = String(str).replace(/\n/g, '<br>');
+      let formatted = escaped.replace(/\n/g, '<br>');
       
-      // Return the raw string (with newlines converted)
       return formatted;
     }
 
@@ -403,9 +358,7 @@
         sub.className = 'text-xs text-slate-500 mt-1';
         // Show last message preview
         const lastMsg = conv.messages.length > 0 ? conv.messages[conv.messages.length - 1].text : 'No messages...';
-        // Strip HTML tags from preview
-        const previewText = lastMsg.replace(/<[^>]*>?/gm, ' ');
-        sub.textContent = previewText.substring(0, 40) + (previewText.length > 40 ? '...' : '');
+        sub.textContent = lastMsg.substring(0, 40) + (lastMsg.length > 40 ? '...' : '');
 
         item.appendChild(title);
         item.appendChild(sub);
@@ -448,17 +401,11 @@
         inputEl.disabled = true;
         
         // --- FAKE BOT RESPONSE (for testing without webhook) ---
-        await new Promise(res => setTimeout(res, 1500)); // Simulate network delay
-        // --- Example of sending HTML ---
-        const data = { 
-            output: `<h1>Test Heading 1</h1>
-<p>This is a paragraph response to your message: "${text.trim()}".</p>
-<h2>Test Heading 2</h2>
-<p>This shows that HTML tags are now rendering correctly.</p>` 
-        };
+        // await new Promise(res => setTimeout(res, 1500)); // Simulate network delay
+        // const data = { output: `This is a simulated response to your message: "${text.trim()}". The real webhook at ${WEBHOOK_URL} is currently being used, but this is a fallback for demonstration.` };
         // --- END FAKE BOT RESPONSE ---
 
-        /* // --- REAL FETCH (Uncomment this block to use the webhook) ---
+        // === EDITED BLOCK (REAL FETCH ENABLED) ===
         const res = await fetch(WEBHOOK_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -471,7 +418,7 @@
         
         const data = await res.json();
         // --- END REAL FETCH ---
-        */
+        
         
         const out = (data && data.output) ? data.output : JSON.stringify(data);
         conv.messages = conv.messages.map(m => m.loading ? { role: 'bot', text: String(out), time: timeNow() } : m);
@@ -519,17 +466,14 @@
     newConvBtn.addEventListener('click', startNewConversation);
     newConvMobileBtn.addEventListener('click', startNewConversation); // Also link mobile button
     
-    // Toggle History Panel on Mobile
+    // Toggle History Panel on Mobile (example)
     const historyPanel = $('#historyPanel');
     const historyToggleBtn = $('#historyToggle');
     if (historyToggleBtn && historyPanel) {
         historyToggleBtn.addEventListener('click', () => {
-            // This is a simple toggle, you might want more complex logic
-            historyPanel.classList.toggle('hidden');
-            historyPanel.classList.toggle('flex');
-            // On mobile, you'd want it to overlay or push content
-            // This simple toggle will just show/hide it.
-            console.log("History panel toggled. Needs more complex layout logic for mobile overlay.");
+            // This requires more logic to properly show/hide
+            // For now, it's hidden on mobile by default
+            console.log("History toggle clicked - feature not fully implemented in this example.");
         });
     }
 
