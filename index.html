@@ -1,487 +1,108 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Professional Chat UI</title>
-  <!-- Load Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Load Inter font -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-
+  <title>ChariFund - Helping Those In Need</title>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/icofont/1.0.1/icofont.min.css" integrity="sha512-xO3fMUJfJ8d+9xX2fqJrnf7fVv9y3zS4sA9mH3N0V6jQyqj+v+o97K5R4PGSk1x5mBvWqWE7C8Yx96h0f4+4kQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
-    /* Use Inter font */
-    body {
-      font-family: 'Inter', sans-serif;
-    }
+    :root {--primary:#f97316;--secondary:#1e3a5f;--bg:#fff;--light:#f8f9fa;--text:#444;--heading:#1e3a5f;}
+    *{box-sizing:border-box} body{font-family:'Nunito',sans-serif;color:var(--text);background:var(--bg);scroll-behavior:smooth}
+    h1,h2,h3,h4,h5,h6{color:var(--heading);font-weight:800} .script-font{font-family:'Caveat',cursive}
+    section{padding:80px 0}
+    .section-header{text-align:center;margin-bottom:50px}
+    .section-header .eyebrow{color:var(--primary);font-weight:700;letter-spacing:1.5px;font-size:.85rem}
+    .section-header h2{font-size:2.3rem;margin-top:10px}
+    .section-header .underline{width:60px;height:3px;background:var(--primary);margin:15px auto 0}
+    .btn-pill{border-radius:50px;padding:.65rem 1.4rem;font-weight:700;transition:all .3s ease}
+    .btn-primary-custom{background:var(--primary);color:#fff;border:2px solid var(--primary)}
+    .btn-primary-custom:hover{background:transparent;color:var(--primary)}
+    .card{border:none;border-radius:10px;overflow:hidden;transition:all .3s ease}
+    .card:hover{transform:translateY(-8px);box-shadow:0 14px 30px rgba(0,0,0,.12)}
 
-    /* Custom scrollbar for message list */
-    #messages {
-      scrollbar-width: thin;
-      scrollbar-color: #cbd5e1 #f1f5f9;
-    }
+    .navbar{transition:all .3s ease;background:#fff;box-shadow:0 6px 20px rgba(0,0,0,.08)}
+    .navbar.scrolled{background:rgba(255,255,255,.95);backdrop-filter:blur(5px)}
+    .navbar-brand{font-weight:900;color:var(--secondary)!important}
+    .navbar-brand i{color:var(--primary)} .nav-link{font-weight:700;color:var(--secondary)!important;position:relative}
+    .nav-link.active,.nav-link:hover{color:var(--primary)!important}
 
-    #messages::-webkit-scrollbar {
-      width: 6px;
-    }
+    #hero{min-height:100vh;background:url('https://picsum.photos/1920/1080?random=1') center/cover no-repeat;position:relative;display:flex;align-items:center}
+    #hero::before{content:'';position:absolute;inset:0;background:rgba(0,0,0,.58)}
+    .hero-content{position:relative;z-index:1;color:#fff}
+    .hero-content h1{font-size:clamp(2rem,5vw,4.2rem);color:#fff}
+    .hero-content p{font-size:1.2rem}
+    .hero-counter{position:relative;z-index:1;margin-top:3rem;background:rgba(255,255,255,.12);border-radius:14px;padding:25px}
+    .hero-counter h3{color:var(--primary)} .hero-counter p{color:#fff;margin:0}
 
-    #messages::-webkit-scrollbar-track {
-      background: #f1f5f9;
-      border-radius: 10px;
-    }
+    .progress{height:10px;border-radius:10px;background:#eceff3}.progress-bar{background:var(--primary)}
+    .badge-category{background:var(--primary);border-radius:50px}
 
-    #messages::-webkit-scrollbar-thumb {
-      background-color: #cbd5e1;
-      border-radius: 10px;
-      border: 3px solid #f1f5f9;
-    }
-    
-    /* Custom scrollbar for history list */
-    #historyList {
-      scrollbar-width: thin;
-      scrollbar-color: #e2e8f0 #f8fafc;
-    }
-    
-    #historyList::-webkit-scrollbar {
-      width: 6px;
-    }
-    
-    #historyList::-webkit-scrollbar-track {
-      background: #f8fafc;
-      border-radius: 10px;
-    }
-    
-    #historyList::-webkit-scrollbar-thumb {
-      background-color: #e2e8f0;
-      border-radius: 10px;
-      border: 3px solid #f8fafc;
-    }
+    .how-step{padding:26px;border-radius:10px;background:#fff;height:100%;position:relative}
+    .how-icon{width:75px;height:75px;border-radius:50%;display:grid;place-items:center;background:rgba(249,115,22,.15);color:var(--primary);font-size:2rem;margin:0 auto 15px}
+    .step-no{position:absolute;top:16px;right:16px;background:var(--secondary);color:#fff;border-radius:50%;width:28px;height:28px;display:grid;place-items:center;font-size:.8rem}
 
-    /* Spinner animation */
-    .spinner {
-      width: 14px;
-      height: 14px;
-      border-radius: 50%;
-      border: 2px solid rgba(0, 0, 0, 0.08);
-      border-top-color: #0b74de; /* Blue accent color */
-      animation: spin 1s linear infinite;
-      display: inline-block;
-      margin-left: 4px;
-    }
+    #impact{background:var(--secondary)} #impact .count{color:var(--primary);font-size:2.2rem;font-weight:900}
+    #impact .item i{font-size:2rem;color:#fff}
 
-    @keyframes spin {
-      to {
-        transform: rotate(360deg);
-      }
-    }
+    .event-date{position:absolute;top:12px;left:12px;background:var(--primary);color:#fff;padding:8px 10px;border-radius:8px;font-weight:800}
+    .team-img{width:120px;height:120px;border-radius:50%;object-fit:cover;margin:20px auto 12px;display:block}
+    .social a{color:var(--secondary);margin:0 6px;transition:all .3s ease}.social a:hover{color:var(--primary)}
+
+    .quote-mark{font-size:2.8rem;color:var(--primary);line-height:1}
+    .stars i{color:var(--primary)}
+
+    .amount-btn{border:1px solid #ddd;border-radius:50px;padding:.45rem .9rem;background:#fff;transition:all .3s ease}
+    .amount-btn.active,.amount-btn:hover{background:var(--primary);color:#fff;border-color:var(--primary)}
+
+    .partner-track{display:flex;gap:30px;animation:scrollLogos 18s linear infinite}
+    .partner-logo{filter:grayscale(100%);opacity:.8;transition:all .3s ease}.partner-logo:hover{filter:none;opacity:1}
+    @keyframes scrollLogos{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+    #newsletter{background:var(--primary);color:#fff}
+    footer{background:var(--secondary);color:#fff;padding-top:70px}
+    footer a{color:#e7eef8;text-decoration:none;transition:all .3s ease}footer a:hover{color:var(--primary)}
+
+    #backTop{position:fixed;bottom:20px;right:20px;width:44px;height:44px;border:none;border-radius:50%;background:var(--primary);color:#fff;display:none;z-index:999}
+    @media (max-width:767px){.hero-counter .col-6{margin-bottom:15px}.section-header h2{font-size:1.9rem}}
   </style>
 </head>
-<body class="bg-slate-100">
-
-  <div class="flex h-screen w-full p-2 md:p-4">
-    
-    <!-- Left Sidebar Navigation -->
-    <nav class="hidden md:flex flex-col w-16 p-2 bg-white rounded-xl shadow-sm border border-slate-200 items-center gap-y-4">
-      <!-- Logo -->
-      <a href="#" class="p-2 bg-green-100 text-green-600 rounded-lg">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/></svg>
-      </a>
-
-      <!-- New Conversation Button (using the existing ID for JS) -->
-      <button id="newConv" title="New Conversation" class="p-3 bg-slate-100 text-slate-700 hover:bg-blue-100 hover:text-blue-600 rounded-lg transition-colors">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
-      </button>
-      
-      <!-- Other icons (example) -->
-      <div class="flex flex-col gap-y-2 mt-auto">
-         <button title="Settings" class="p-3 text-slate-500 hover:bg-slate-100 hover:text-slate-800 rounded-lg transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-settings-2"><path d="M20 7h-9a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2Z"/><path d="M14 21v-2a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v2"/><path d="M12 17V5"/></svg>
-         </button>
-         <button title="Profile" class="p-2 text-slate-500 rounded-lg">
-            <img src="https://placehold.co/32x32/e0e7ff/6366f1?text=A&font=sans" alt="User" class="w-8 h-8 rounded-full">
-         </button>
-      </div>
-    </nav>
-
-    <!-- Main Chat Area -->
-    <div class="flex flex-col flex-1 mx-0 md:mx-4 bg-white rounded-xl shadow-sm border border-slate-200">
-      
-      <!-- Chat Header -->
-      <header class="flex items-center justify-between p-4 border-b border-slate-200">
-        <!-- === EDITED LINE === -->
-        <h1 class="text-lg font-semibold text-slate-800">OS Chat Bot</h1>
-        <!-- Mobile Nav Toggle (for future use) -->
-        <div class="flex items-center gap-2">
-            <button id="newConvMobile" class="md:hidden p-2 bg-slate-100 text-slate-700 rounded-lg">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
-            </button>
-            <button id="historyToggle" class="md:hidden p-2 bg-slate-100 text-slate-700 rounded-lg">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-history"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg>
-            </button>
-        </div>
-      </header>
-
-      <!-- Messages Area -->
-      <div id="messages" class="flex-1 p-4 md:p-6 overflow-y-auto space-y-5">
-        <!-- Messages will be rendered here by JS -->
-      </div>
-
-      <!-- Composer / Text Input -->
-      <div class="p-4 md:p-6 border-t border-slate-200 bg-white rounded-b-xl">
-        <div class="flex items-end p-2 bg-slate-100 rounded-lg border border-slate-200 focus-within:ring-2 focus-within:ring-blue-500">
-          <textarea id="input" placeholder="Ask or search anything..." class="flex-1 p-2 bg-transparent border-none resize-none focus:ring-0 text-sm text-slate-700 placeholder:text-slate-500" rows="1" style="min-height: 2.5rem; max-height: 10rem;"></textarea>
-          <button id="send" title="Send Message" class="w-9 h-9 flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors ml-2 flex-shrink-0">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-send-horizontal"><path d="m3 3 3 9-3 9 19-9Z"/><path d="M6 12h16"/></svg>
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Right History Panel -->
-    <!-- === EDITED LINE (FIXED TYPO) === -->
-    <aside id="historyPanel" class="hidden lg:flex flex-col w-full max-w-sm p-4 bg-white rounded-xl shadow-sm border border-slate-200">
-      <div class="flex items-center justify-between pb-3 border-b border-slate-200">
-        <h2 class="font-semibold text-slate-800">History Chat</h2>
-        <span id="convCount" class="text-sm font-medium text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">0</span>
-      </div>
-      
-      <!-- History List -->
-      <div id="historyList" class="flex-1 mt-4 space-y-2 overflow-y-auto -mr-2 pr-2">
-        <!-- History items will be rendered here by JS -->
-      </div>
-      
-      <!-- Pro Plan Card (from image) -->
-      <div class="mt-4 p-5 rounded-xl bg-gradient-to-br from-green-400 to-cyan-500 text-white relative overflow-hidden">
-        <div class="relative z-10">
-          <h3 class="text-lg font-semibold">Pro Plan</h3>
-          <p class="text-sm opacity-90 mt-1 mb-4">Get various other interesting features</p>
-          <button class="w-full bg-slate-900/80 hover:bg-slate-900 text-white text-sm font-medium py-2.5 px-4 rounded-lg transition-colors">
-            Get Pro Plan Now
-          </button>
-        </div>
-      </div>
-    </aside>
-  </div>
-
-  <script>
-    // ✅ Updated Webhook URL (new ngrok endpoint)
-    // === EDITED LINE ===
-    const WEBHOOK_URL = 'https://delilah-unclever-malcolm.ngrok-free.dev/webhook/mscsbot';
-
-    const STORAGE_KEY = 'chat_conversations_v2'; // Updated key
-    const SESSION_KEY = 'chat_session_id_v2'; // Updated key
-    
-    function getSessionId() {
-      try {
-        let s = sessionStorage.getItem(SESSION_KEY);
-        if (!s) {
-          s = 's_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 10);
-          sessionStorage.setItem(SESSION_KEY, s);
-        }
-        return s;
-      } catch (e) {
-        if (!window.__CHAT_FALLBACK_SESSION) window.__CHAT_FALLBACK_SESSION = 's_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 10);
-        return window.__CHAT_FALLBACK_SESSION;
-      }
-    }
-
-    const $ = (sel, ctx = document) => ctx.querySelector(sel);
-    const timeNow = () => new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
-    
-    let conversations = [];
-    let activeId = null;
-
-    const messagesEl = $('#messages');
-    const historyListEl = $('#historyList');
-    const inputEl = $('#input');
-    const sendBtn = $('#send');
-    const newConvBtn = $('#newConv');
-    const newConvMobileBtn = $('#newConvMobile'); // Mobile button
-    const convCountEl = $('#convCount');
-
-    // --- Auto-resize textarea ---
-    function autoResizeTextarea() {
-      inputEl.style.height = 'auto';
-      inputEl.style.height = (inputEl.scrollHeight) + 'px';
-    }
-    inputEl.addEventListener('input', autoResizeTextarea);
-
-    function load() {
-      try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        conversations = raw ? JSON.parse(raw) : [];
-      } catch (e) {
-        conversations = [];
-      }
-      
-      // Sort conversations by most recent
-      conversations.sort((a, b) => b.updatedAt - a.updatedAt);
-
-      if (!conversations || conversations.length === 0) {
-        startNewConversation();
-      } else {
-        activeId = conversations[0].id;
-      }
-      
-      renderAll();
-    }
-    
-    function persist() {
-      if (!conversations || conversations.length === 0) return;
-      // Find active conversation and update its timestamp
-      const activeConv = getActiveConv();
-      if(activeConv) activeConv.updatedAt = Date.now();
-      
-      // Re-sort before saving
-      conversations.sort((a, b) => b.updatedAt - a.updatedAt);
-      
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(conversations));
-    }
-    
-    function makeId() {
-      return 'c_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 8);
-    }
-    
-    function getActiveConv() {
-      return conversations.find(c => c.id === activeId);
-    }
-
-    function renderAll() {
-      renderMessages();
-      renderHistory();
-      autoResizeTextarea(); // Ensure textarea is correct size on load
-    }
-
-    function renderMessages() {
-      const conv = getActiveConv();
-      messagesEl.innerHTML = '';
-      if (!conv || !conv.messages) return;
-      
-      conv.messages.forEach(m => messagesEl.appendChild(renderMessageEl(m)));
-      messagesEl.scrollTop = messagesEl.scrollHeight;
-    }
-    
-    function renderMessageEl(m) {
-      const msgWrapper = document.createElement('div');
-      const isUser = m.role === 'user';
-      
-      // Avatar
-      const avatar = document.createElement('img');
-      avatar.className = 'w-8 h-8 rounded-full flex-shrink-0';
-      avatar.src = isUser 
-        ? 'https://placehold.co/40x40/e0e7ff/6366f1?text=U&font=sans' 
-        : 'https://placehold.co/40x40/d1fae5/10b981?text=AI&font=sans';
-      avatar.alt = isUser ? 'User' : 'Bot';
-
-      // Message Bubble
-      const msgBubble = document.createElement('div');
-      msgBubble.className = `msg-bubble relative max-w-xl px-4 py-3 rounded-lg shadow-sm`;
-      
-      if (isUser) {
-        msgWrapper.className = 'flex items-start gap-3 justify-end';
-        msgBubble.className += ' bg-blue-600 text-white rounded-br-none';
-      } else {
-        msgWrapper.className = 'flex items-start gap-3';
-        msgBubble.className += ' bg-slate-50 border border-slate-200 text-slate-800 rounded-bl-none';
-      }
-
-      // Message Content
-      const textDiv = document.createElement('div');
-      textDiv.className = 'text-sm prose prose-sm max-w-none';
-      textDiv.innerHTML = escapeAndFormat(m.text); // Use formatting
-      
-      // Meta (Timestamp or Loading)
-      const metaDiv = document.createElement('div');
-      metaDiv.className = 'meta text-xs mt-2';
-
-      if (m.loading) {
-        metaDiv.className += ' text-slate-500';
-        metaDiv.textContent = 'Typing… ';
-        const spinner = document.createElement('span');
-        spinner.className = 'spinner';
-        metaDiv.appendChild(spinner);
-      } else {
-        metaDiv.className += isUser ? 'text-blue-200' : 'text-slate-500';
-        metaDiv.textContent = m.time;
-      }
-
-      msgBubble.appendChild(textDiv);
-      msgBubble.appendChild(metaDiv);
-      
-      if (isUser) {
-        msgWrapper.appendChild(msgBubble);
-        msgWrapper.appendChild(avatar);
-      } else {
-        msgWrapper.appendChild(avatar);
-        msgWrapper.appendChild(msgBubble);
-      }
-      
-      return msgWrapper;
-    }
-
-    function escapeAndFormat(str) {
-      // 1. Escape HTML
-      let escaped = String(str)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
-      
-      // 2. Format newlines to <br>
-      let formatted = escaped.replace(/\n/g, '<br>');
-      
-      return formatted;
-    }
-
-    function renderHistory() {
-      historyListEl.innerHTML = '';
-      convCountEl.textContent = conversations.length;
-      
-      if (!conversations || conversations.length === 0) {
-          historyListEl.innerHTML = `<p class="text-sm text-slate-500 p-3">No conversations yet.</p>`;
-          return;
-      }
-      
-      conversations.forEach(conv => {
-        const item = document.createElement('div');
-        item.className = `p-3 rounded-lg cursor-pointer group transition-colors ${conv.id === activeId ? 'bg-blue-50' : 'hover:bg-slate-50'}`;
-        item.setAttribute('data-id', conv.id);
-        
-        const title = document.createElement('div');
-        title.className = `text-sm font-medium truncate ${conv.id === activeId ? 'text-blue-700' : 'text-slate-700 group-hover:text-slate-900'}`;
-        title.textContent = conv.title;
-        
-        const sub = document.createElement('div');
-        sub.className = 'text-xs text-slate-500 mt-1';
-        // Show last message preview
-        const lastMsg = conv.messages.length > 0 ? conv.messages[conv.messages.length - 1].text : 'No messages...';
-        sub.textContent = lastMsg.substring(0, 40) + (lastMsg.length > 40 ? '...' : '');
-
-        item.appendChild(title);
-        item.appendChild(sub);
-        
-        item.addEventListener('click', () => {
-          activeId = conv.id;
-          renderAll();
-        });
-        
-        historyListEl.appendChild(item);
-      });
-    }
-
-    async function sendMessage(text) {
-      if (!text || !text.trim()) return;
-      
-      const conv = getActiveConv();
-      const userMsg = { role: 'user', text: text.trim(), time: timeNow() };
-      conv.messages.push(userMsg);
-      
-      // Update title if it's a new conversation
-      if (conv.messages.length === 1 && conv.title === 'New conversation') {
-        conv.title = text.trim().substring(0, 30) + (text.trim().length > 30 ? '...' : '');
-      }
-      
-      conv.updatedAt = Date.now();
-      persist(); 
-      renderMessages();
-      renderHistory(); // Update history to show new title/preview
-
-      const loadingMsg = { role: 'bot', text: '…', time: timeNow(), loading: true };
-      conv.messages.push(loadingMsg);
-      persist(); 
-      renderMessages();
-
-      const payload = { input: text.trim(), sessionId: getSessionId() };
-      
-      try {
-        sendBtn.disabled = true;
-        inputEl.disabled = true;
-        
-        // --- FAKE BOT RESPONSE (for testing without webhook) ---
-        // await new Promise(res => setTimeout(res, 1500)); // Simulate network delay
-        // const data = { output: `This is a simulated response to your message: "${text.trim()}". The real webhook at ${WEBHOOK_URL} is currently being used, but this is a fallback for demonstration.` };
-        // --- END FAKE BOT RESPONSE ---
-
-        // === EDITED BLOCK (REAL FETCH ENABLED) ===
-        const res = await fetch(WEBHOOK_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-        
-        if (!res.ok) {
-            throw new Error(`HTTP error! status: ${res.status}`);
-        }
-        
-        const data = await res.json();
-        // --- END REAL FETCH ---
-        
-        
-        const out = (data && data.output) ? data.output : JSON.stringify(data);
-        conv.messages = conv.messages.map(m => m.loading ? { role: 'bot', text: String(out), time: timeNow() } : m);
-      } catch (err) {
-        console.error("Error sending message:", err);
-        conv.messages = conv.messages.map(m => m.loading ? { role: 'bot', text: 'Error: ' + err.message, time: timeNow() } : m);
-      } finally {
-        sendBtn.disabled = false;
-        inputEl.disabled = false;
-        inputEl.focus();
-        conv.updatedAt = Date.now();
-        persist();
-        renderMessages();
-        renderHistory();
-      }
-    }
-
-    function startNewConversation() {
-      const id = makeId();
-      const conv = { id, title: 'New conversation', createdAt: Date.now(), updatedAt: Date.now(), messages: [] };
-      conversations.unshift(conv); // Add to the beginning
-      activeId = id;
-      persist();
-      renderAll();
-    }
-
-    // --- Event Listeners ---
-    sendBtn.addEventListener('click', () => {
-      const txt = inputEl.value;
-      inputEl.value = '';
-      sendMessage(txt);
-      autoResizeTextarea(); // Reset textarea size
-    });
-
-    inputEl.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault();
-        const txt = inputEl.value;
-        inputEl.value = '';
-        sendMessage(txt);
-        autoResizeTextarea(); // Reset textarea size
-      }
-    });
-
-    newConvBtn.addEventListener('click', startNewConversation);
-    newConvMobileBtn.addEventListener('click', startNewConversation); // Also link mobile button
-    
-    // Toggle History Panel on Mobile (example)
-    const historyPanel = $('#historyPanel');
-    const historyToggleBtn = $('#historyToggle');
-    if (historyToggleBtn && historyPanel) {
-        historyToggleBtn.addEventListener('click', () => {
-            // This requires more logic to properly show/hide
-            // For now, it's hidden on mobile by default
-            console.log("History toggle clicked - feature not fully implemented in this example.");
-        });
-    }
-
-
-    // --- Initial Load ---
-    load();
-    
-  </script>
-</body>
-</html>
-
+<body>
+<nav id="navbar" class="navbar navbar-expand-lg sticky-top py-3">
+  <div class="container"><a class="navbar-brand" href="#home"><i class="icofont-heart-alt"></i> ChariFund</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu"><span class="navbar-toggler-icon"></span></button>
+    <div class="collapse navbar-collapse" id="navMenu">
+      <ul class="navbar-nav mx-auto gap-lg-2">
+        <li class="nav-item"><a class="nav-link active" href="#home">Home</a></li><li class="nav-item"><a class="nav-link" href="#about">About</a></li><li class="nav-item"><a class="nav-link" href="#causes">Causes</a></li><li class="nav-item"><a class="nav-link" href="#events">Events</a></li><li class="nav-item"><a class="nav-link" href="#pages">Pages</a></li><li class="nav-item"><a class="nav-link" href="#blog">Blog</a></li><li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+      </ul><a href="#donate" class="btn btn-pill btn-primary-custom">Donate Now</a>
+    </div></div></nav>
+<section id="home"><div id="hero"><div class="container hero-content"><h1>Help Us Change The World</h1><p>Together We Can Make A Difference</p><div class="d-flex gap-3"><a class="btn btn-pill btn-primary-custom" href="#donate">Donate Now</a><a class="btn btn-pill btn-outline-light" href="#about">Learn More</a></div><div class="hero-counter"><div class="row text-center"><div class="col-6 col-lg-3"><h3>5,280+</h3><p>Volunteers</p></div><div class="col-6 col-lg-3"><h3>$2.5M+</h3><p>Funds Raised</p></div><div class="col-6 col-lg-3"><h3>890+</h3><p>Projects Done</p></div><div class="col-6 col-lg-3"><h3>120+</h3><p>Countries Helped</p></div></div></div></div></div></section>
+<section id="about"><div class="container"><div class="row g-5 align-items-center"><div class="col-lg-6"><img class="img-fluid rounded-4" src="https://picsum.photos/700/550?random=2"></div><div class="col-lg-6"><div class="eyebrow text-uppercase fw-bold" style="color:var(--primary)">ABOUT US</div><h2>About Our Charity</h2><h4 class="mb-3">We Are On A Mission To Help The Needy</h4><p>ChariFund is dedicated to empowering communities through access to education, nutrition, healthcare, and essential resources.</p><p>We collaborate with local partners and global supporters to ensure donations create measurable and lasting impact.</p><p>Our transparent reporting and grassroots model allow every contribution to directly support people in need.</p><p>From urgent crisis response to long-term development, we remain committed to helping families thrive.</p><div class="mb-2">Education 85%</div><div class="progress mb-3"><div class="progress-bar prog" data-width="85"></div></div><div class="mb-2">Food &amp; Water 90%</div><div class="progress mb-3"><div class="progress-bar prog" data-width="90"></div></div><div class="mb-2">Medical Aid 75%</div><div class="progress mb-4"><div class="progress-bar prog" data-width="75"></div></div><a class="btn btn-pill btn-primary-custom" href="#">Read More</a></div></div></div></section>
+<section id="causes"><div class="container"><div class="section-header"><div class="eyebrow">FEATURED CAMPAIGNS</div><h2>Our Causes</h2><div class="underline"></div></div><div class="row g-4"> 
+<div class="col-12 col-md-4"><div class="card h-100"><img src="https://picsum.photos/500/300?random=3" class="card-img-top"><div class="card-body"><span class="badge badge-category">Education</span><h5 class="mt-3">Build Classrooms For Every Child</h5><p>Support safe learning spaces and school materials in underserved communities.</p><div class="progress mb-2"><div class="progress-bar" style="width:62%"></div></div><div class="d-flex justify-content-between"><small>Raised: $12,500</small><small>Goal: $20,000</small></div><a class="btn btn-pill btn-primary-custom w-100 mt-3">Donate Now</a></div></div></div>
+<div class="col-12 col-md-4"><div class="card h-100"><img src="https://picsum.photos/500/300?random=4" class="card-img-top"><div class="card-body"><span class="badge badge-category">Healthcare</span><h5 class="mt-3">Mobile Clinics For Rural Areas</h5><p>Provide essential medicine, checkups, and emergency care where access is limited.</p><div class="progress mb-2"><div class="progress-bar" style="width:75%"></div></div><div class="d-flex justify-content-between"><small>Raised: $15,000</small><small>Goal: $20,000</small></div><a class="btn btn-pill btn-primary-custom w-100 mt-3">Donate Now</a></div></div></div>
+<div class="col-12 col-md-4"><div class="card h-100"><img src="https://picsum.photos/500/300?random=5" class="card-img-top"><div class="card-body"><span class="badge badge-category">Food Relief</span><h5 class="mt-3">Meals & Water For Families</h5><p>Deliver nutrition kits and clean water systems to vulnerable neighborhoods.</p><div class="progress mb-2"><div class="progress-bar" style="width:58%"></div></div><div class="d-flex justify-content-between"><small>Raised: $11,600</small><small>Goal: $20,000</small></div><a class="btn btn-pill btn-primary-custom w-100 mt-3">Donate Now</a></div></div></div>
+</div></div></section>
+<section id="pages" style="background:var(--light)"><div class="container"><div class="section-header"><div class="eyebrow">PROCESS</div><h2>How It Works</h2><div class="underline"></div></div><div class="row g-4 text-center"><div class="col-12 col-md-6 col-lg-3"><div class="how-step"><div class="step-no">1</div><div class="how-icon"><i class="icofont-search"></i></div><h5>Choose A Cause</h5><p>Pick a meaningful campaign aligned with your values.</p></div></div><div class="col-12 col-md-6 col-lg-3"><div class="how-step"><div class="step-no">2</div><div class="how-icon"><i class="icofont-heart"></i></div><h5>Make A Donation</h5><p>Give securely with one-time or monthly support.</p></div></div><div class="col-12 col-md-6 col-lg-3"><div class="how-step"><div class="step-no">3</div><div class="how-icon"><i class="icofont-chart-bar-graph"></i></div><h5>Track Progress</h5><p>Monitor campaign updates and real-time impact.</p></div></div><div class="col-12 col-md-6 col-lg-3"><div class="how-step"><div class="step-no">4</div><div class="how-icon"><i class="icofont-share"></i></div><h5>Share With Others</h5><p>Invite your network to multiply positive change.</p></div></div></div></div></section>
+<section id="impact"><div class="container"><div class="row text-center g-4"><div class="col-6 col-lg-3 item"><i class="icofont-users-alt-5"></i><div class="count" data-target="5280">0</div><p class="text-white">Volunteers</p></div><div class="col-6 col-lg-3 item"><i class="icofont-money-bag"></i><div class="count" data-target="2500000">0</div><p class="text-white">Raised</p></div><div class="col-6 col-lg-3 item"><i class="icofont-flag-alt-2"></i><div class="count" data-target="890">0</div><p class="text-white">Projects</p></div><div class="col-6 col-lg-3 item"><i class="icofont-earth"></i><div class="count" data-target="120">0</div><p class="text-white">Countries</p></div></div></div></section>
+<section id="events"><div class="container"><div class="section-header"><div class="eyebrow">EVENTS</div><h2>Upcoming Events</h2><div class="underline"></div></div><div class="row g-4"><div class="col-12 col-md-4"><div class="card h-100 position-relative"><span class="event-date">12 Jun</span><img src="https://picsum.photos/500/320?random=11" class="card-img-top"><div class="card-body"><h5>Charity Marathon 2026</h5><p><i class="icofont-google-map"></i> Central Park, New York</p><p><i class="icofont-clock-time"></i> 08:00 AM - 12:00 PM</p><a href="#" class="text-decoration-none" style="color:var(--primary)">Register Now <i class="icofont-rounded-right"></i></a></div></div></div><div class="col-12 col-md-4"><div class="card h-100 position-relative"><span class="event-date">25 Jul</span><img src="https://picsum.photos/500/320?random=12" class="card-img-top"><div class="card-body"><h5>Food Drive Campaign</h5><p><i class="icofont-google-map"></i> Queens Community Hall</p><p><i class="icofont-clock-time"></i> 10:00 AM - 03:00 PM</p><a href="#" class="text-decoration-none" style="color:var(--primary)">Register Now <i class="icofont-rounded-right"></i></a></div></div></div><div class="col-12 col-md-4"><div class="card h-100 position-relative"><span class="event-date">03 Aug</span><img src="https://picsum.photos/500/320?random=13" class="card-img-top"><div class="card-body"><h5>Global Donor Summit</h5><p><i class="icofont-google-map"></i> Brooklyn Expo Center</p><p><i class="icofont-clock-time"></i> 01:00 PM - 06:00 PM</p><a href="#" class="text-decoration-none" style="color:var(--primary)">Register Now <i class="icofont-rounded-right"></i></a></div></div></div></div></div></section>
+<section id="team" style="background:var(--light)"><div class="container"><div class="section-header"><div class="eyebrow">OUR TEAM</div><h2>Meet Our Team</h2><div class="underline"></div></div><div class="row g-4 text-center"><div class="col-12 col-sm-6 col-lg-3"><div class="card h-100 p-3"><img class="team-img" src="https://picsum.photos/240/240?random=21"><h6 class="fw-bold">Sophia Martin</h6><p style="color:var(--primary)">Founder</p><div class="social"><a href="#"><i class="icofont-facebook"></i></a><a href="#"><i class="icofont-twitter"></i></a><a href="#"><i class="icofont-instagram"></i></a><a href="#"><i class="icofont-linkedin"></i></a></div></div></div><div class="col-12 col-sm-6 col-lg-3"><div class="card h-100 p-3"><img class="team-img" src="https://picsum.photos/240/240?random=22"><h6 class="fw-bold">Liam Brooks</h6><p style="color:var(--primary)">Program Director</p><div class="social"><a href="#"><i class="icofont-facebook"></i></a><a href="#"><i class="icofont-twitter"></i></a><a href="#"><i class="icofont-instagram"></i></a><a href="#"><i class="icofont-linkedin"></i></a></div></div></div><div class="col-12 col-sm-6 col-lg-3"><div class="card h-100 p-3"><img class="team-img" src="https://picsum.photos/240/240?random=23"><h6 class="fw-bold">Emma Lewis</h6><p style="color:var(--primary)">Campaign Lead</p><div class="social"><a href="#"><i class="icofont-facebook"></i></a><a href="#"><i class="icofont-twitter"></i></a><a href="#"><i class="icofont-instagram"></i></a><a href="#"><i class="icofont-linkedin"></i></a></div></div></div><div class="col-12 col-sm-6 col-lg-3"><div class="card h-100 p-3"><img class="team-img" src="https://picsum.photos/240/240?random=24"><h6 class="fw-bold">Noah Rivera</h6><p style="color:var(--primary)">Volunteer Manager</p><div class="social"><a href="#"><i class="icofont-facebook"></i></a><a href="#"><i class="icofont-twitter"></i></a><a href="#"><i class="icofont-instagram"></i></a><a href="#"><i class="icofont-linkedin"></i></a></div></div></div></div></div></section>
+<section id="testimonials"><div class="container"><div class="section-header"><div class="eyebrow">TESTIMONIALS</div><h2>What Donors Say</h2><div class="underline"></div></div><div id="tCarousel" class="carousel slide" data-bs-ride="carousel"><div class="carousel-inner"><div class="carousel-item active text-center"><div class="quote-mark">&#10077;</div><p class="w-75 mx-auto">ChariFund gave me confidence that my donation truly changed lives.</p><img src="https://picsum.photos/70/70?random=18" class="rounded-circle"><h6 class="mt-2 mb-0">Emily Carter</h6><small>Boston, USA</small><div class="stars mt-2"><i class="icofont-star"></i><i class="icofont-star"></i><i class="icofont-star"></i><i class="icofont-star"></i><i class="icofont-star"></i></div></div></div></div></div></section>
+<section id="donate" style="background:var(--light)"><div class="container"><div class="row g-5"><div class="col-lg-5"><h2>Make A Donation</h2><p>We connect donors with meaningful causes around the world to create lasting change.</p></div><div class="col-lg-7"><form class="bg-white p-4 rounded-4 shadow-sm"><div class="d-flex flex-wrap gap-2 mb-3"><button type="button" class="amount-btn active">$10</button><button type="button" class="amount-btn">$25</button><button type="button" class="amount-btn">$50</button><button type="button" class="amount-btn">$100</button><button type="button" class="amount-btn">Custom</button></div><input class="form-control mb-3" placeholder="Name"><input class="form-control mb-3" placeholder="Email"><input class="form-control mb-3" placeholder="Phone"><textarea class="form-control mb-3" rows="4" placeholder="Message"></textarea><button class="btn btn-pill btn-primary-custom w-100">Donate Now</button><p class="mt-3 mb-0"><i class="icofont-lock"></i> Secure payments: <i class="icofont-visa"></i> <i class="icofont-mastercard"></i> <i class="icofont-paypal"></i></p></form></div></div></div></section>
+<section id="blog"><div class="container"><div class="section-header"><div class="eyebrow">NEWS</div><h2>Latest Blog</h2><div class="underline"></div></div><div class="row g-4"><div class="col-12 col-md-4"><div class="card h-100"><img src="https://picsum.photos/500/300?random=51" class="card-img-top"><div class="card-body"><span class="badge badge-category">Community</span><p class="small mt-2 mb-1">May 01, 2026</p><h5>How Local Volunteers Are Transforming Lives</h5><p>Discover inspiring stories from field teams making measurable impact every day.</p><div class="d-flex align-items-center justify-content-between"><div><img src="https://picsum.photos/32/32?random=61" class="rounded-circle me-2">By Sarah K.</div><a href="#" style="color:var(--primary)">Read More <i class="icofont-rounded-right"></i></a></div></div></div></div><div class="col-12 col-md-4"><div class="card h-100"><img src="https://picsum.photos/500/300?random=52" class="card-img-top"><div class="card-body"><span class="badge badge-category">Education</span><p class="small mt-2 mb-1">April 18, 2026</p><h5>5 Ways Donors Can Support Child Education</h5><p>Practical actions for contributing to better classrooms and brighter futures.</p><div class="d-flex align-items-center justify-content-between"><div><img src="https://picsum.photos/32/32?random=62" class="rounded-circle me-2">By David P.</div><a href="#" style="color:var(--primary)">Read More <i class="icofont-rounded-right"></i></a></div></div></div></div><div class="col-12 col-md-4"><div class="card h-100"><img src="https://picsum.photos/500/300?random=53" class="card-img-top"><div class="card-body"><span class="badge badge-category">Health</span><p class="small mt-2 mb-1">March 30, 2026</p><h5>Medical Aid Outreach Across Rural Communities</h5><p>See how mobile clinics are extending healthcare access to families in need.</p><div class="d-flex align-items-center justify-content-between"><div><img src="https://picsum.photos/32/32?random=63" class="rounded-circle me-2">By Nina T.</div><a href="#" style="color:var(--primary)">Read More <i class="icofont-rounded-right"></i></a></div></div></div></div></div></div></section>
+<section><div class="container overflow-hidden"><div class="section-header"><div class="eyebrow">SPONSORS</div><h2>Our Partners</h2><div class="underline"></div></div><div class="partner-track"><img class="partner-logo" src="https://picsum.photos/160/70?random=31"><img class="partner-logo" src="https://picsum.photos/160/70?random=32"><img class="partner-logo" src="https://picsum.photos/160/70?random=33"><img class="partner-logo" src="https://picsum.photos/160/70?random=34"><img class="partner-logo" src="https://picsum.photos/160/70?random=35"><img class="partner-logo" src="https://picsum.photos/160/70?random=36"><img class="partner-logo" src="https://picsum.photos/160/70?random=31"><img class="partner-logo" src="https://picsum.photos/160/70?random=32"></div></div></section>
+<section id="newsletter"><div class="container"><div class="row align-items-center g-3"><div class="col-lg-7"><h3 class="text-white mb-1">Subscribe To Our Newsletter</h3><p class="mb-0">Stay updated with our latest news and campaigns</p></div><div class="col-lg-5"><div class="input-group"><input class="form-control rounded-pill" placeholder="Enter email"><button class="btn btn-light rounded-pill ms-2" style="color:var(--primary)">Subscribe</button></div></div></div></div></section>
+<footer id="contact"><div class="container"><div class="row g-4 pb-4"><div class="col-lg-3"><h5><i class="icofont-heart-alt"></i> ChariFund</h5><p>Helping Those In Need</p></div><div class="col-lg-3"><h6>Quick Links</h6><ul class="list-unstyled"><li><a href="#home">Home</a></li><li><a href="#about">About</a></li><li><a href="#causes">Causes</a></li><li><a href="#events">Events</a></li><li><a href="#blog">Blog</a></li><li><a href="#contact">Contact</a></li></ul></div><div class="col-lg-3"><h6>Recent Causes</h6><div class="d-flex gap-2 mb-2"><img src="https://picsum.photos/50/50?random=41" class="rounded"><small>Clean water access</small></div><div class="d-flex gap-2 mb-2"><img src="https://picsum.photos/50/50?random=42" class="rounded"><small>School supplies</small></div><div class="d-flex gap-2"><img src="https://picsum.photos/50/50?random=43" class="rounded"><small>Medical outreach</small></div></div><div class="col-lg-3"><h6>Contact</h6><p>123 Charity Lane, New York, NY 10001<br>+1 (555) 123-4567<br>info@charifund.org</p></div></div><div class="border-top border-light-subtle py-3 d-flex flex-wrap justify-content-between"><small>Copyright © 2026 ChariFund. All Rights Reserved.</small><small><a href="#">Privacy Policy</a> | <a href="#">Terms</a></small></div></div></footer>
+<button id="backTop"><i class="icofont-simple-up"></i></button>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+const nav=document.querySelector('#navbar'),links=document.querySelectorAll('.nav-link'),sections=[...document.querySelectorAll('section[id]')],back=document.getElementById('backTop');
+window.addEventListener('scroll',()=>{nav.classList.toggle('scrolled',window.scrollY>20);back.style.display=window.scrollY>400?'block':'none';let cur='home';sections.forEach(s=>{if(scrollY>=s.offsetTop-130)cur=s.id});links.forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+cur));});
+back.onclick=()=>window.scrollTo({top:0,behavior:'smooth'});
+document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener('click',e=>{const t=document.querySelector(a.getAttribute('href'));if(t){e.preventDefault();t.scrollIntoView({behavior:'smooth'});}}));
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.querySelectorAll('.count').forEach(c=>{let t=+c.dataset.target,n=0,inc=Math.max(1,Math.floor(t/120));let timer=setInterval(()=>{n+=inc;if(n>=t){n=t;clearInterval(timer)}c.textContent=t>999? (t>=1000000? '$'+(n/1000000).toFixed(1)+'M':n.toLocaleString()):n;},16)});io.unobserve(e.target)}}),{threshold:.35});io.observe(document.querySelector('#impact'));
+const ioProg=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.style.width=e.target.dataset.width+'%';ioProg.unobserve(e.target)}}),{threshold:.6});document.querySelectorAll('.prog').forEach(p=>{p.style.width=0;ioProg.observe(p)});
+document.querySelectorAll('.amount-btn').forEach(b=>b.onclick=()=>{document.querySelectorAll('.amount-btn').forEach(x=>x.classList.remove('active'));b.classList.add('active')});
+</script>
+</body></html>
